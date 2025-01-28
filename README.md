@@ -1,38 +1,13 @@
-# sv
+# HYDIE
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+*How's Your Development Initiative and Experience?*
 
-## Creating a project
+This app retrieves data from your (or your organization's) github repo, and then displays information about it, like the average size of a developer's pull requests, the number of pull requests a developer has reviewed over a set period of time.
 
-If you're seeing this, you've probably already done this step. Congrats!
+> [!CAUTION] Warning
+> You must be careful when using data like this to measure developer productivity. These metrics should be leading indicators that signal areas to look into. They should NOT be used as a definitive metric of performance and productivity.
+>
+> For example, a developer having fewer pull requests than other developers is not necessarily a bad thing. That developer might be working on highly sensitive, or very complex areas of the application that take more time. They might be focussed on helping unblock other developers who are working on higher priority items. This is just 1 of an infinite number of reasons why hard metrics like these should not be used exclusively to monitor the performance of a developer. These metrics should be used to identify *potential* concerns that are worth looking into more thoroughly.
+>
+> Please use Hydie responsibly.
 
-```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
