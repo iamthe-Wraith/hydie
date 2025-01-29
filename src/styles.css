@@ -1,13 +1,13 @@
 /* variable font */
-@font-face {
+/* @font-face {
 	font-family: 'RobotoSlab';
 	src: url('/fonts/Roboto_Slab/RobotoSlab-VariableFont_wght.ttf') format('truetype');
 	font-weight: 100 900;
 	font-style: normal;
-}
+} */
 
 /* static fallback */
-@font-face {
+/* @font-face {
     font-family: 'RobotoSlab';
     src: url('/fonts/Roboto_Slab/static/RobotoSlab-Thin.ttf') format('truetype');
     font-weight: 100;
@@ -68,18 +68,18 @@
     src: url('/fonts/Roboto_Slab/static/RobotoSlab-Black.ttf') format('truetype');
     font-weight: 900;
     font-style: normal;
-}
+} */
 
 /* variable font */
-@font-face {
+/* @font-face {
 	font-family: 'Ruda';
 	src: url('/fonts/Ruda/Ruda-VariableFont_wght.ttf') format('truetype');
 	font-weight: 100 900;
 	font-style: normal;
-}
+} */
 
 /* static fallback */
-@font-face {
+/* @font-face {
 	font-family: 'Ruda';
 	src: url('/fonts/Ruda/static/Ruda-Regular.ttf') format('truetype');
 	font-weight: 400;
@@ -119,7 +119,7 @@
 	src: url('/fonts/Ruda/static/Ruda-Black.ttf') format('truetype');
 	font-weight: 900;
 	font-style: normal;
-}
+} */
 
 html,
 body {

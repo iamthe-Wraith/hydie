@@ -3,6 +3,7 @@
     import { goto } from '$app/navigation';
     import type { Snippet } from 'svelte';
     import type { IAuthSession } from '$lib/types/auth';
+    import Header from '$lib/components/Header.svelte';
 
     let {
         children,
@@ -43,4 +44,27 @@
     <meta name="twitter:image" content="" />
 </svelte:head>
 
-{@render children()}
+<div class="app">
+    {#if !data.redirect_to}
+        <Header user={data.session.user} />
+        <main class="main">
+            {@render children()}
+        </main>
+    {/if}
+</div>
+
+<style lang="postcss">
+    .app {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .main {
+        flex: 1;
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+</style>

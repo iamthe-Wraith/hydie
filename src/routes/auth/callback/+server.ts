@@ -5,6 +5,7 @@ import type { IGitHubUser } from '$lib/types/auth';
 import { env } from '$env/dynamic/private';
 import { PUBLIC_GITHUB_CLIENT_ID } from '$env/static/public';
 import { GITHUB_CLIENT_SECRET } from '$env/static/private';
+import { prisma } from '$lib/server/prisma';
 
 export const GET: RequestHandler = async ({ url, cookies }) => {
     const code = url.searchParams.get('code');
@@ -48,14 +49,34 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 
         const github_user = await user_response.json() as IGitHubUser;
 
-        // Set session cookie
-        cookies.set('session', JSON.stringify({
-            user: {
-                id: github_user.id.toString(),
+        // Create or update user in database
+        const user = await prisma.user.upsert({
+            where: { github_id: github_user.id.toString() },
+            update: {
                 username: github_user.login,
                 email: github_user.email,
                 avatar_url: github_user.avatar_url,
+                name: github_user.name,
                 access_token: token_data.access_token
+            },
+            create: {
+                github_id: github_user.id.toString(),
+                username: github_user.login,
+                email: github_user.email,
+                avatar_url: github_user.avatar_url,
+                name: github_user.name,
+                access_token: token_data.access_token
+            }
+        });
+
+        // Set session cookie
+        cookies.set('session', JSON.stringify({
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                avatar_url: user.avatar_url,
+                access_token: user.access_token
             },
             is_authenticated: true
         }), {
@@ -65,12 +86,12 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
             sameSite: 'lax',
             maxAge: 60 * 60 * 24 * 7 // 1 week
         });
-
-        throw redirect(303, '/');
     } catch (err) {
         if (err instanceof Error) {
             throw error(500, err.message);
         }
         throw error(500, 'An unexpected error occurred');
     }
+
+    throw redirect(303, '/');
 }; 
