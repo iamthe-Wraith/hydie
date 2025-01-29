@@ -13,6 +13,9 @@ Code and Style Structure
 - always use sveltekit for all routing
 - always use fetch for all api calls
 - always use svelte for all components
+- always use the colors found in css variables from file: src/styles.css
+- if you are unsure about the color, use the color found in the css variables from file: src/styles.css
+- if styles are declared in a css file, do not duplicate those styles within components
 
 Naming Conventions
 - always use kabob-case for file names
@@ -27,3 +30,18 @@ Naming Conventions
 - always use ALL_UPPER_CASE_SNAKE_CASE for constant names
 - always use snake_case for property names
 - always use snake_case for method names
+
+API and Library Usage
+- always use Svelte 5 for all components
+- always use SvelteKit for all server side code
+- always use SvelteKit for all routing
+- always use Prisma for all database operations
+- always use TypeScript for all code
+
+API and Library Documentation
+- use GitHubs API documentation: https://docs.github.com/en/rest?apiVersion=2022-11-28
+- use SvelteKit documentation: https://svelte.dev/docs/kit/introduction
+- use Svelte 5 documentation: https://svelte.dev/docs/svelte/overview
+- use Prisma documentation: https://www.prisma.io/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases/connect-your-database-typescript-postgresql
+- use TypeScript documentation: https://www.typescriptlang.org/docs/
+- use Fetch documentation: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch

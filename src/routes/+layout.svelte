@@ -1,12 +1,25 @@
 <script lang="ts">
     import '../styles.css';
-	import type { Snippet } from 'svelte';
+    import { goto } from '$app/navigation';
+    import type { Snippet } from 'svelte';
+    import type { IAuthSession } from '$lib/types/auth';
 
     let {
-        children
+        children,
+        data
     }: {
         children: Snippet;
+        data: {
+            session: IAuthSession;
+            redirect_to?: string;
+        };
     } = $props();
+
+    $effect(() => {
+        if (data.redirect_to) {
+            goto(data.redirect_to);
+        }
+    });
 </script>
 
 <svelte:head>
