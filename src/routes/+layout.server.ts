@@ -1,7 +1,7 @@
 import type { LayoutServerLoad } from './$types';
 import type { IAuthSession } from '$lib/types/auth';
 
-export const load: LayoutServerLoad = async ({ cookies, url }) => {
+export const load: LayoutServerLoad = async ({ cookies, url, locals }) => {
     const session_cookie = cookies.get('session');
     let session: IAuthSession = {
         user: null,
@@ -33,6 +33,7 @@ export const load: LayoutServerLoad = async ({ cookies, url }) => {
     }
 
     return {
-        session
+        session,
+        user: locals.user
     };
 }; 

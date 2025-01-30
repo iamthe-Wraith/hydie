@@ -6,7 +6,7 @@ CREATE TABLE "users" (
     "email" TEXT,
     "avatar_url" TEXT,
     "name" TEXT,
-    "access_token" TEXT NOT NULL,
+    "oauth_access_token" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 

@@ -57,7 +57,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
                 email: github_user.email,
                 avatar_url: github_user.avatar_url,
                 name: github_user.name,
-                access_token: token_data.access_token
+                oauth_access_token: token_data.access_token
             },
             create: {
                 github_id: github_user.id.toString(),
@@ -65,19 +65,22 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
                 email: github_user.email,
                 avatar_url: github_user.avatar_url,
                 name: github_user.name,
-                access_token: token_data.access_token
+                oauth_access_token: token_data.access_token
             }
         });
 
         // Set session cookie
+        const user_data = {
+            id: user.id,
+            login: user.username,
+            name: user.name,
+            email: user.email,
+            avatar_url: user.avatar_url,
+            oauth_access_token: user.oauth_access_token
+        };
+
         cookies.set('session', JSON.stringify({
-            user: {
-                id: user.id,
-                username: user.username,
-                email: user.email,
-                avatar_url: user.avatar_url,
-                access_token: user.access_token
-            },
+            user: user_data,
             is_authenticated: true
         }), {
             path: '/',

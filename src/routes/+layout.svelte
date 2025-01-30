@@ -4,6 +4,7 @@
     import type { Snippet } from 'svelte';
     import type { IAuthSession } from '$lib/types/auth';
     import Header from '$lib/components/Header.svelte';
+	import { auth } from '$lib/state/auth.svelte';
 
     let {
         children,

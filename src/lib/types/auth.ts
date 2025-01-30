@@ -3,7 +3,7 @@ export interface IUser {
     username: string;
     email: string;
     avatar_url: string;
-    access_token: string;
+    oauth_access_token: string;
 }
 
 export interface IGitHubUser {

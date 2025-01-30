@@ -13,16 +13,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+enum TokenType {
+  PERSONAL
+  ORGANIZATION
+}
+
+model AccessToken {
   id            String    @id @default(cuid())
-  github_id     String    @unique
-  username      String    @unique
-  email         String?   @unique
-  avatar_url    String?
-  name          String?
-  access_token  String
+  token         String
+  token_type    TokenType
+  user_id       String
+  user          User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  org_id        String?   // GitHub organization ID if token_type is ORGANIZATION
+  org_name      String?   // GitHub organization name if token_type is ORGANIZATION
   created_at    DateTime  @default(now())
   updated_at    DateTime  @updatedAt
+
+  @@map("access_tokens")
+}
+
+model User {
+  id                  String        @id @default(cuid())
+  github_id           String        @unique
+  username            String        @unique
+  email               String?       @unique
+  avatar_url          String?
+  name                String?
+  oauth_access_token  String        // GitHub OAuth access token from login
+  access_tokens       AccessToken[]
+  created_at          DateTime      @default(now())
+  updated_at          DateTime      @updatedAt
 
   @@map("users")
 }
