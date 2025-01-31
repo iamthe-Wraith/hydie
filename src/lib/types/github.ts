@@ -13,4 +13,19 @@ export interface IGithubUser {
     name?: string | null;
     email?: string | null;
     oauth_access_token?: string;
+}
+
+export interface IGithubRepo {
+    id: number;
+    name: string;
+    full_name: string;
+    description: string | null;
+    html_url: string;
+    private: boolean;
+    owner: IGithubOrg;
+    default_branch: string;
+    created_at: string;
+    updated_at: string;
+    pushed_at: string;
+    language: string | null;
 } 
