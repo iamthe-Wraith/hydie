@@ -28,4 +28,13 @@ export interface IGithubRepo {
     updated_at: string;
     pushed_at: string;
     language: string | null;
+}
+
+export interface IContributor {
+    login: string;
+    id: number;
+    avatar_url: string;
+    html_url: string;
+    contributions: number;
+    pull_requests_count: number;
 } 
