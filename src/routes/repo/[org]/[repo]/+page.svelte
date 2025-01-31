@@ -6,15 +6,27 @@
     let contributors: IContributor[] = [];
     let loading = true;
     let error: string | null = null;
+    let selected_timeframe = '6m';
 
-    onMount(async () => {
+    const timeframe_options = [
+        { value: '1w', label: 'Past week' },
+        { value: '2w', label: 'Past 2 weeks' },
+        { value: '1m', label: 'Past month' },
+        { value: '3m', label: 'Past 3 months' },
+        { value: '6m', label: 'Past 6 months' }
+    ];
+
+    async function fetch_contributors(timeframe: string) {
+        loading = true;
+        error = null;
         try {
-            const response = await fetch(`/api/github/contributors?org=${$page.params.org}&repo=${$page.params.repo}`);
+            const response = await fetch(
+                `/api/github/contributors?org=${$page.params.org}&repo=${$page.params.repo}&timeframe=${timeframe}`
+            );
             if (!response.ok) {
                 throw new Error('Failed to fetch contributors');
             }
             const data = await response.json();
-            // Filter out users with no PRs and sort by PR count
             contributors = data
                 .filter((c: IContributor) => c.pull_requests_count > 0)
                 .sort((a: IContributor, b: IContributor) => b.pull_requests_count - a.pull_requests_count);
@@ -23,21 +35,41 @@
         } finally {
             loading = false;
         }
+    }
+
+    function handle_timeframe_change() {
+        fetch_contributors(selected_timeframe);
+    }
+
+    onMount(() => {
+        fetch_contributors(selected_timeframe);
     });
 </script>
 
 <div class="container">
     <h1>{$page.params.org}/{$page.params.repo}</h1>
 
+    <div class="timeframe-selector">
+        <select 
+            bind:value={selected_timeframe}
+            on:change={handle_timeframe_change}
+            class="select"
+        >
+            {#each timeframe_options as option}
+                <option value={option.value}>{option.label}</option>
+            {/each}
+        </select>
+    </div>
+
     <div class="content">
         <div class="contributors-section">
-            <h2>Pull Request Contributors (Last 6 Months)</h2>
+            <h2>Pull Request Contributors</h2>
             {#if loading}
                 <p class="status-message">Loading contributors...</p>
             {:else if error}
                 <p class="status-message error">{error}</p>
             {:else if contributors.length === 0}
-                <p class="status-message">No pull request contributors found in the last 6 months.</p>
+                <p class="status-message">No pull request contributors found in the selected time period.</p>
             {:else}
                 <div class="contributors-grid">
                     {#each contributors as contributor}
@@ -69,6 +101,33 @@
         padding: 2rem;
         max-width: 1200px;
         margin: 0 auto;
+    }
+
+    .timeframe-selector {
+        width: 100%;
+        margin: 1rem 0 2rem;
+    }
+
+    .select {
+        background-color: var(--color-bg-2);
+        color: var(--color-text);
+        border: 1px solid var(--neutral-300);
+        border-radius: 6px;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: border-color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    }
+
+    .select:hover {
+        background-color: var(--color-bg-3);
+        border-color: var(--neutral-400);
+    }
+
+    .select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 2px var(--color-primary-alpha);
     }
 
     .content {

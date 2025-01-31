@@ -3,6 +3,29 @@ import type { RequestHandler } from './$types';
 import { prisma } from '$lib/server/prisma';
 import type { IContributor } from '$lib/types/github';
 
+function get_date_for_timeframe(timeframe: string): Date {
+    const date = new Date();
+    switch (timeframe) {
+        case '1w':
+            date.setDate(date.getDate() - 7);
+            break;
+        case '2w':
+            date.setDate(date.getDate() - 14);
+            break;
+        case '1m':
+            date.setMonth(date.getMonth() - 1);
+            break;
+        case '3m':
+            date.setMonth(date.getMonth() - 3);
+            break;
+        case '6m':
+        default:
+            date.setMonth(date.getMonth() - 6);
+            break;
+    }
+    return date;
+}
+
 export const GET: RequestHandler = async ({ locals, url }) => {
     if (!locals.user) {
         return new Response('Unauthorized', { status: 401 });
@@ -10,6 +33,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 
     const org_name = url.searchParams.get('org');
     const repo_name = url.searchParams.get('repo');
+    const timeframe = url.searchParams.get('timeframe') || '6m';
 
     if (!org_name || !repo_name) {
         return new Response('Organization and repository names are required', { status: 400 });
@@ -28,9 +52,8 @@ export const GET: RequestHandler = async ({ locals, url }) => {
         return new Response('Organization access token not found', { status: 400 });
     }
 
-    // Calculate date 6 months ago
-    const six_months_ago = new Date();
-    six_months_ago.setMonth(six_months_ago.getMonth() - 6);
+    // Calculate start date based on timeframe
+    const start_date = get_date_for_timeframe(timeframe);
 
     // First, get all contributors to have a list of usernames
     const contributors_response = await fetch(
@@ -55,7 +78,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     const enhanced_contributors = await Promise.all(
         contributors.map(async (contributor) => {
             const prs_response = await fetch(
-                `https://api.github.com/search/issues?q=type:pr+repo:${org_name}/${repo_name}+author:${contributor.login}+created:>=${six_months_ago.toISOString()}`,
+                `https://api.github.com/search/issues?q=type:pr+repo:${org_name}/${repo_name}+author:${contributor.login}+created:>=${start_date.toISOString()}`,
                 {
                     headers: {
                         'Authorization': `Bearer ${org_token.token}`,
