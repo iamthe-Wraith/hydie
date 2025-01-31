@@ -103,11 +103,23 @@
                             </div>
                             <div class="metric-stats">
                                 <div class="metric-stat">
-                                    <span class="metric-value">{contributor.average_changes.toLocaleString()}</span>
+                                    <span
+                                        class="metric-value"
+                                        class:high={contributor.average_changes > 1000}
+                                        class:medium={contributor.average_changes > 500 && contributor.average_changes <= 1000}
+                                    >
+                                        {contributor.average_changes.toLocaleString()}
+                                    </span>
                                     <span class="metric-label">avg. changes per PR</span>
                                 </div>
                                 <div class="metric-stat">
-                                    <span class="metric-value">{contributor.average_review_comments}</span>
+                                    <span
+                                        class="metric-value"
+                                        class:high={contributor.average_review_comments > 10}
+                                        class:medium={contributor.average_review_comments > 5 && contributor.average_review_comments <= 10}
+                                    >
+                                        {contributor.average_review_comments}
+                                    </span>
                                     <span class="metric-label">avg. review comments per PR</span>
                                 </div>
                             </div>
@@ -311,10 +323,18 @@
     }
 
     .metric-value {
-        color: var(--color-text);
+        color: var(--neutral-900);
         font-size: 1.25rem;
         font-weight: 600;
         margin-bottom: 0.25rem;
+
+        &.high {
+            color: var(--danger-600);
+        }
+
+        &.medium {
+            color: var(--tertiary-400);
+        }
     }
 
     .metric-label {
