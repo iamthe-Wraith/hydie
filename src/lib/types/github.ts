@@ -37,4 +37,11 @@ export interface IContributor {
     html_url: string;
     contributions: number;
     pull_requests_count: number;
+    average_changes: number;
+    average_review_comments: number;
+    largest_pr: {
+        number: number;
+        changes: number;
+        html_url: string;
+    };
 } 

@@ -6,7 +6,7 @@
     let contributors: IContributor[] = [];
     let loading = true;
     let error: string | null = null;
-    let selected_timeframe = '6m';
+    let selected_timeframe = '2w';
 
     const timeframe_options = [
         { value: '1w', label: 'Past week' },
@@ -85,8 +85,45 @@
             {/if}
         </div>
 
-        <div class="stats-section">
-            stats go here...
+        <div class="metrics-section">
+            <h2>Pull Request Metrics</h2>
+            {#if loading}
+                <p class="status-message">Loading metrics...</p>
+            {:else if error}
+                <p class="status-message error">{error}</p>
+            {:else if contributors.length === 0}
+                <p class="status-message">No data available for the selected time period.</p>
+            {:else}
+                <div class="metrics-grid">
+                    {#each contributors as contributor}
+                        <div class="metric-card">
+                            <div class="metric-header">
+                                <img src={contributor.avatar_url} alt={contributor.login} class="metric-avatar" />
+                                <span class="metric-username">{contributor.login}</span>
+                            </div>
+                            <div class="metric-stats">
+                                <div class="metric-stat">
+                                    <span class="metric-value">{contributor.average_changes.toLocaleString()}</span>
+                                    <span class="metric-label">avg. changes per PR</span>
+                                </div>
+                                <div class="metric-stat">
+                                    <span class="metric-value">{contributor.average_review_comments}</span>
+                                    <span class="metric-label">avg. review comments per PR</span>
+                                </div>
+                            </div>
+                            {#if contributor.largest_pr.changes > 0}
+                                <div class="largest-pr">
+                                    <a href={contributor.largest_pr.html_url} target="_blank" rel="noopener noreferrer" class="pr-link">
+                                        <span class="pr-label">Largest PR:</span>
+                                        <span class="pr-changes">{contributor.largest_pr.changes.toLocaleString()} changes</span>
+                                        <span class="pr-arrow">→</span>
+                                    </a>
+                                </div>
+                            {/if}
+                        </div>
+                    {/each}
+                </div>
+            {/if}
         </div>
     </div>
 
@@ -132,7 +169,7 @@
 
     .content {
         display: grid;
-        grid-template-columns: 15rem 1fr;
+        grid-template-columns: 350px 1fr;
         gap: 2rem;
         width: 100%;
     }
@@ -151,7 +188,6 @@
 
     .contributors-section {
         width: 100%;
-        margin-right: 1rem;
     }
 
     .status-message {
@@ -223,5 +259,101 @@
 
     .back-link:hover {
         color: var(--color-text);
+    }
+
+    .metrics-section {
+        width: 100%;
+    }
+
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .metric-card {
+        background: var(--color-bg-2);
+        border: 1px solid var(--neutral-300);
+        border-radius: 8px;
+        padding: 1rem;
+    }
+
+    .metric-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .metric-avatar {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        margin-right: 0.5rem;
+    }
+
+    .metric-username {
+        color: var(--color-text);
+        font-weight: 500;
+    }
+
+    .metric-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .metric-stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .metric-value {
+        color: var(--color-text);
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+
+    .metric-label {
+        color: var(--color-text-2);
+        font-size: 0.75rem;
+        line-height: 1.2;
+    }
+
+    .largest-pr {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--neutral-300);
+    }
+
+    .pr-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--color-text-2);
+        font-size: 0.875rem;
+        text-decoration: none;
+        transition: color 0.2s ease-in-out;
+    }
+
+    .pr-link:hover {
+        color: var(--color-text);
+    }
+
+    .pr-label {
+        color: var(--color-text-2);
+    }
+
+    .pr-changes {
+        color: var(--color-text);
+        font-weight: 500;
+    }
+
+    .pr-arrow {
+        margin-left: auto;
+        font-size: 1rem;
     }
 </style> 
