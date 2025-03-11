@@ -3,14 +3,7 @@ import { Octokit } from '@octokit/rest';
 import { Logger } from './logger';
 import { GITHUB_OWNER, GITHUB_REPO, GITHUB_TOKEN } from '$env/static/private';
 import { ApiError } from '$lib/utils/api-error';
-
-type Status = 'not-synced' | 'synced' | 'syncing' | 'error' | null;
-
-interface ICodeReviewsData {
-    last_synced: string | null;
-    status: Status;
-    data: Record<string, Record<string, number>>;
-}
+import type { ICodeReviewsData } from '../../types';
 
 export class CodeReviewsService {
     private file_name = 'data.json';
@@ -66,9 +59,16 @@ export class CodeReviewsService {
                 return file_data;
             }
 
+            let data: ICodeReviewsData = {
+                ...file_data,
+                status: 'syncing',
+            }
+
+            fs.writeFileSync(this.file_name, JSON.stringify(data));
+
             const code_reviews = await this.get_code_reviews();
 
-            const data = {
+            data = {
                 last_synced: new Date().toISOString(),
                 status: 'synced',
                 data: code_reviews
