@@ -1,38 +1,55 @@
-# sv
+# HYDIE
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+How's Your Development Involvement and Engagement
 
-## Creating a project
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Setup
 
-```bash
-# create a new project in the current directory
-npx sv create
+1. run `git clone https://github.com/iamthe-Wraith/hydie.git`
 
-# create a new project in my-app
-npx sv create my-app
-```
+2. run `cd hydie`
 
-## Developing
+3. run `npm install`
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+4. run `cp .env.example .env`
 
-```bash
-npm run dev
+5. add the required environment variables to the new .env file (see [Environment Variables](#environment-variables))
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+6. run `npm run dev`
 
-## Building
+7. open you browser and visit `http://localhost:5173/`
 
-To create a production version of your app:
 
-```bash
-npm run build
-```
+## Environment Variables
+Below are instructions on where to find the values you'll need for your environment variables.
 
-You can preview the production build with `npm run preview`.
+### `GITHUB_OWNER`
+The username or organization name of the owner of the repo to pull data from.
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+If the repo is owned by an individual user, you can find their name in their url. Visit the user's GitHub profile and copy the url. Mine is `https://github.com/iamthe-Wraith`. Now copy the value found after `https://github.com` and remove any leading or trailing `/`'s. This is the value to set for the `GITHUB_OWNER` environment variable.
+
+If the repo is owned by an organization, the process is the same. Go to the organization's GitHub profile and copy the url. One of my organization's urls is `https://github.com/BuzyBee-Buzz/`. Now copy the value found after `https://github.com` and remove any leading or trailing `/`'s. This is the value to set for the `GITHUB_OWNER` environment variable.
+
+### `GITHUB_REPO`
+The name of the GitHub repository to pull data from.
+
+To find this value, visit the repo in the browser and copy the url. The url for this repo is `https://github.com/iamthe-Wraith/hydie`...that end part (`hydie`) is the name of the repo.
+
+### `GITHUB_TOKEN`
+This is your access token that will grant your requests access. To create an access token...
+
+1. login to GitHub
+2. navigate to `https://github.com/settings/personal-access-tokens`
+3. click `Generate new token`
+4. give the access token a name. this will help you to identify your access tokens later, so make it clear what the token is to be used for.
+5. set the `Resource owner`. if the repo is owned by an organization, you will likely need to change this value to the organization's name. otherwise, set this to your username.
+6. set an `Expiration`
+7. for `Repository access`, I personally prefer to use `Only select repositories` and select only the repo i'll be accessing, but select the option that's best for your personal use case.
+8. under `Permissions`, expand the `Repository permissions` details
+9. find the `Pull requests` option and set it's value to `Read-only`
+10. NOTE...this will automatically set `Metadata` to `Read-only` as well. The required and expected.
+11. scroll to the bottom of the page and click `Generate token`
+12. copy the personal access token once it's displayed in the UI (make sure to do this, once you leave the page you cannot access this token again and will have to re-generate the token)
+13. paste the personal access token as the value for the `GITHUB_TOKEN` environment variable
+
+*💾 Don't forget to Save the changes you make to the `.env` file.*
