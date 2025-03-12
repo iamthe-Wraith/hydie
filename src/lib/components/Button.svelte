@@ -38,7 +38,7 @@
     button {
         position: relative;
 		padding: 0.5rem 1rem;
-		color: var(--neutral-900);
+		color: var(--neutral-100);
 		border: none;
 		border-radius: 4px;
 
@@ -75,6 +75,10 @@
                 opacity: 0;
             }
         }
+
+        & span {
+            color: var(--neutral-100);
+        }
 	}
 
     .primary {
@@ -89,7 +93,7 @@
         }
 
         .spinner i {
-            color: var(--primary-700);
+            color: var(--primary-100);
         }
     }
 
@@ -154,18 +158,18 @@
     }
 
     .tertiary {
-        background-color: var(--tertiary-400);
+        background-color: var(--secondary-400);
 
         &:hover:not(:disabled) {
-            background-color: var(--tertiary-500);
+            background-color: var(--secondary-500);
         }
 
         &:disabled {
-            background-color: color-mix(in oklab, var(--tertiary-400) 50%, transparent);
+            background-color: color-mix(in oklab, var(--secondary-400) 50%, transparent);
         }
 
         .spinner i {
-            color: var(--tertiary-700);
+            color: var(--secondary-700);
         }
     }
 
@@ -175,19 +179,19 @@
         border: none;
 
         &:hover:not(:disabled) .text {
-            color: var(--tertiary-600);
+            color: var(--secondary-600);
         }
 
         &:disabled {
-            color: color-mix(in oklab, var(--tertiary-400) 50%, transparent);
+            color: color-mix(in oklab, var(--secondary-400) 50%, transparent);
         }
 
         .text {
-            color: var(--tertiary-500);
+            color: var(--secondary-500);
         }
 
         .spinner i {
-            color: var(--tertiary-700);
+            color: var(--secondary-700);
         }
     }
 

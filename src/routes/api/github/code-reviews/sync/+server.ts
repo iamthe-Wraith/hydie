@@ -1,7 +1,7 @@
 import { CodeReviewsService } from "$lib/services/code-reviews";
 import { ApiError } from "$lib/utils/api-error";
 import { ApiResponse } from "$lib/utils/api-response";
-import { fail, json } from "@sveltejs/kit";
+import { error, json } from "@sveltejs/kit";
 
 export const POST = async () => {
     try {
@@ -11,6 +11,6 @@ export const POST = async () => {
         return json(data);
     } catch (err: unknown) {
         const response = new ApiResponse({ errors: ApiError.parse(err) });
-        return fail(response.status_code, { errors: response.errors });
+        return error(response.status_code, response.errors?.[0]?.message || 'An unknown error occurred');
     }
 };

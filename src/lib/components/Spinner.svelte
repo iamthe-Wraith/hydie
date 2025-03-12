@@ -61,8 +61,8 @@
         }
 
         &.tertiary {
-            --spinner-color-dim: var(--tertiary-200);
-            --spinner-color-bright: var(--tertiary-400);
+            --spinner-color-dim: var(--secondary-200);
+            --spinner-color-bright: var(--secondary-400);
         }
 
         &.neutral {

@@ -79,10 +79,10 @@
     }
 
     .tertiary {
-        background-color: var(--tertiary-400);
+        background-color: var(--secondary-400);
 
         &:hover {
-            background-color: var(--tertiary-500);
+            background-color: var(--secondary-500);
         }
     }
 
@@ -92,11 +92,11 @@
         border: none;
 
         &:hover .text {
-            color: var(--tertiary-600);
+            color: var(--secondary-600);
         }
 
         .text {
-            color: var(--tertiary-500);
+            color: var(--secondary-500);
         }
     }
 

@@ -4,6 +4,7 @@ import { Logger } from './logger';
 import { GITHUB_OWNER, GITHUB_REPO, GITHUB_TOKEN } from '$env/static/private';
 import { ApiError } from '$lib/utils/api-error';
 import type { ICodeReviewsData } from '../../types';
+import type { NumericRange } from '@sveltejs/kit';
 
 export class CodeReviewsService {
     private file_name = 'data.json';
@@ -129,44 +130,55 @@ export class CodeReviewsService {
             });
         } catch (error: unknown) {
             if (error instanceof Error && 'status' in error && error.status === 404) {
-                throw new Error('Repository not found. Please check if the organization and repository names are correct.');
+                throw new ApiError('Repository not found. Please check if the organization and repository names are correct.', 404);
             }
             if (error instanceof Error && 'status' in error && error.status === 403) {
-                throw new Error('API rate limit exceeded or insufficient permissions. Please check your token has the necessary permissions.');
+                throw new ApiError('API rate limit exceeded or insufficient permissions. Please check your token has the necessary permissions.', 403);
             }
-            throw error;
+            if (error instanceof Error && 'status' in error && error.status === 401) {
+                throw new ApiError('Invalid token. Please check your token is correct.', 401);
+            }
+            if (error instanceof Error && 'status' in error) {
+                throw new ApiError((error as Error).message, error.status as NumericRange<200, 599>);
+            }
+            throw new ApiError((error as Error).message, 500);
         }
     }
     
 
     private get_code_reviews = async (): Promise<Record<string, Record<string, number>>> => {
-        // First verify we have access to the repository
-        await this.verify_repository_access();
+        try {
+            // First verify we have access to the repository
+            await this.verify_repository_access();
 
-        const dates = this.get_date_range();
-        const startDate = this.format_date_for_query(dates[0]);
-        
-        console.log('Fetching PR reviews... This may take a moment...');
-        
-        // Get all PR reviews within the date range
-        const reviews = await this.get_all_reviews(startDate);
+            const dates = this.get_date_range();
+            const startDate = this.format_date_for_query(dates[0]);
+            
+            console.log('Fetching PR reviews... This may take a moment...');
+            
+            // Get all PR reviews within the date range
+            const reviews = await this.get_all_reviews(startDate);
 
-        // Process reviews by user and date
-        const userStats: Record<string, Record<string, number>> = {};
-        
-        reviews.forEach(review => {
-            const reviewDate = review.submitted_at!.split('T')[0];
-            if (reviewDate >= dates[0] && reviewDate <= dates[this.numberOfDays - 1]) {
-                const username: string = review.user!.login;
-                if (!userStats[username]) {
-                    userStats[username] = {};
-                    dates.forEach(date => userStats[username][date] = 0);
+            // Process reviews by user and date
+            const userStats: Record<string, Record<string, number>> = {};
+            
+            reviews.forEach(review => {
+                const reviewDate = review.submitted_at!.split('T')[0];
+                if (reviewDate >= dates[0] && reviewDate <= dates[this.numberOfDays - 1]) {
+                    const username: string = review.user!.login;
+                    if (!userStats[username]) {
+                        userStats[username] = {};
+                        dates.forEach(date => userStats[username][date] = 0);
+                    }
+                    userStats[username][reviewDate]++;
                 }
-                userStats[username][reviewDate]++;
-            }
-        });
+            });
 
-        return userStats;
+            return userStats;
+        } catch (error: unknown) {
+            Logger.error(error);
+            throw error;
+        }
     }
 
     private get_date_range() {
@@ -187,12 +199,18 @@ export class CodeReviewsService {
             });
         } catch (error: unknown) {
             if (error instanceof Error && 'status' in error && error.status === 404) {
-                throw new Error('Repository not found. Please check if the organization and repository names are correct.');
+                throw new ApiError('Repository not found. Please check if the organization and repository names are correct.', 404);
             }
             if (error instanceof Error && 'status' in error && error.status === 403) {
-                throw new Error('Access denied. Please ensure your token has access to the organization repository.');
+                throw new ApiError('Access denied. Please ensure your token has access to the organization repository.', 403);
             }
-            throw error;
+            if (error instanceof Error && 'status' in error && error.status === 401) {
+                throw new ApiError('Invalid token. Please check your token is correct.', 401);
+            }
+            if (error instanceof Error && 'status' in error) {
+                throw new ApiError((error as Error).message, error.status as NumericRange<200, 599>);
+            }
+            throw new ApiError((error as Error).message, 500);
         }
     }
 }

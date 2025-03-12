@@ -43,9 +43,15 @@
             const response = await fetch('/api/github/code-reviews/sync', {
                 method: 'POST'
             });
-            const data = await response.json();
-            parse_data(data);
-            sync_status = data.status;
+
+            if (response.ok) {
+                const data = await response.json();
+                parse_data(data);
+                sync_status = data.status;
+            } else {
+                const error = await response.json();
+                throw new Error(error.message);
+            }
         } catch (err: unknown) {
             if (err instanceof Error) {
                 error = err.message;
@@ -57,10 +63,10 @@
 </script>
 
 {#if error}
-    <p class="error">{error}</p>
-{/if}
-
-{#if sync_status === 'syncing'}
+    <div class="error-container flex-center">
+        <p class="error">{error}</p>
+    </div>
+{:else if sync_status === 'syncing'}
     <div class="syncing-container">
         <div>
             <Spinner size="large" type="tertiary">
@@ -123,6 +129,15 @@
 {/if}
 
 <style>
+    .error-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 10vh;
+    }
+
     .syncing-container {
         display: flex;
         flex-direction: column;
@@ -177,7 +192,7 @@
         align-items: end;
         
         & div {
-            color: var(--tertiary-500);
+            color: var(--secondary-500);
         }
     }
 
